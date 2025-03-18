@@ -3,7 +3,16 @@ import clientPromise from '../../lib/mongodb';
 import { v4 as uuidv4 } from 'uuid';
 import jwt from 'jsonwebtoken';
 
-// Function to generate a random password
+interface Task {
+  id: string;
+  title: string;
+  priority: 'Low' | 'Medium' | 'High';
+  description?: string;
+  deadline?: string | null;
+  status: 'To Do' | 'In Progress' | 'Done';
+  comments: any[];
+}
+
 const generateRandomPassword = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let password = '';
@@ -12,16 +21,6 @@ const generateRandomPassword = () => {
   }
   return password;
 };
-
-interface Board {
-  id: string;
-  name: string;
-  created: string;
-  tasks: any[];
-  userId: string;
-  password: string;
-  members: string[];
-}
 
 const getUserIdFromToken = (req: NextApiRequest): string | null => {
   const authHeader = req.headers.authorization;
@@ -32,13 +31,8 @@ const getUserIdFromToken = (req: NextApiRequest): string | null => {
   
   const token = authHeader.split(' ')[1];
   try {
-    // Changed to match the token structure from login API (id instead of userId)
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key') as { id: string };
-    
-    // Log the decoded token for debugging
     console.log('Decoded token:', decoded);
-    
-    // Return the id field instead of userId
     return decoded.id;
   } catch (error) {
     console.error('Token verification failed:', error);
@@ -49,7 +43,6 @@ const getUserIdFromToken = (req: NextApiRequest): string | null => {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const userId = getUserIdFromToken(req);
   
-  // Add more detailed error message
   if (!userId) {
     console.log('Failed authentication, token invalid or expired');
     return res.status(401).json({ error: 'Unauthorized - Invalid or expired token' });
@@ -62,7 +55,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === 'GET') {
     try {
-      // Query for boards where the user is a member
       const boards = await db.collection('boards').find({ 
         members: userId 
       }).toArray();
@@ -88,7 +80,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         id: uuidv4(),
         name,
         created: new Date().toISOString(),
-        tasks: [],
+        tasks: [] as Task[], // Specified type
         userId,
         password,
         members: [userId],

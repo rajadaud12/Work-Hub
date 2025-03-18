@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Head from 'next/head';
+import Image from 'next/image'; // Added import
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 
 type FormData = {
@@ -51,7 +52,6 @@ export default function Signup() {
         <meta name="description" content="Join TaskBoard Hub to manage tasks and collaborate with your team." />
       </Head>
       
-      {/* Left Side: Form - directly on left section without card shadow container */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-8 bg-white">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
@@ -168,18 +168,17 @@ export default function Signup() {
         </div>
       </div>
       
-      {/* Right Side: Illustration with visible text */}
       <div className="hidden md:flex w-1/2 bg-gradient-to-br from-indigo-600 to-purple-700 p-12 flex-col justify-center items-center">
         <div className="max-w-lg text-center">
           <h2 className="text-4xl font-bold mb-6 text-white">TaskBoard Hub</h2>
           <p className="text-xl mb-12 text-white">Collaborate and manage tasks with your team efficiently. Boost productivity with our intuitive interface.</p>
         </div>
-        <img 
+        <Image 
           src="/illustration.svg" 
           alt="TaskBoard Hub Illustration" 
-          className="max-w-md h-auto" 
           width={300}
-
+          height={300} // Added height
+          className="max-w-md h-auto" 
         />
         <div className="mt-12 flex gap-4">
           <div className="p-4 bg-white bg-opacity-20 rounded-lg">

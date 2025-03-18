@@ -1,14 +1,13 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import clientPromise from '../../../lib/mongodb';
 import jwt from 'jsonwebtoken';
-import { WithId, Document } from 'mongodb';
 
 // Define the Board interface
 interface Board {
   id: string;
   name: string;
   created: string;
-  tasks: any[];
+  tasks: unknown[];
   userId: string;
   password: string;
   members: string[];
@@ -23,7 +22,7 @@ const getUserIdFromToken = (req: NextApiRequest): string | null => {
   const token = authHeader.split(' ')[1];
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key') as { id: string };
-    return decoded.id; // Changed from userId to id to match login token structure
+    return decoded.id;
   } catch (error) {
     console.error('Token verification failed:', error);
     return null;

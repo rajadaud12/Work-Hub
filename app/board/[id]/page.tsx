@@ -53,7 +53,6 @@ export default function BoardDetail() {
 
   const statusColumns: Array<'To Do' | 'In Progress' | 'Done'> = ['To Do', 'In Progress', 'Done'];
 
-  // Calculate task statistics for better UX insights
   const taskStats = useMemo(() => {
     if (!board) return null;
     
@@ -146,7 +145,6 @@ export default function BoardDetail() {
 
   const updateTaskStatus = async (taskId: string, newStatus: Task['status']) => {
     try {
-      // Optimistic UI update for smoother UX
       setBoard((prev) => ({
         ...prev!,
         tasks: prev!.tasks.map((task) =>
@@ -161,7 +159,6 @@ export default function BoardDetail() {
       });
       
       if (!response.ok) {
-        // Revert if the API call fails
         setBoard((prev) => ({
           ...prev!,
           tasks: prev!.tasks.map((task) =>
@@ -181,7 +178,6 @@ export default function BoardDetail() {
     if (!content.trim()) return false;
     
     try {
-      // Optimistic UI update
       const tempId = `temp-${Date.now()}`;
       setBoard((prev) => ({
         ...prev!,
@@ -205,7 +201,6 @@ export default function BoardDetail() {
       });
       
       if (!response.ok) {
-        // Revert if API call fails
         setBoard((prev) => ({
           ...prev!,
           tasks: prev!.tasks.map((task) =>
@@ -222,7 +217,6 @@ export default function BoardDetail() {
       
       const { id: commentId } = await response.json();
       
-      // Update with real ID
       setBoard((prev) => ({
         ...prev!,
         tasks: prev!.tasks.map((task) =>
@@ -298,7 +292,7 @@ export default function BoardDetail() {
             ></path>
           </svg>
           <h2 className="text-2xl font-semibold text-gray-800 mb-2">{error || 'Board not found'}</h2>
-          <p className="text-gray-600 mb-6">The board you're looking for doesn't exist or has been deleted.</p>
+          <p className="text-gray-600 mb-6">The board you’re looking for doesn’t exist or has been deleted.</p>
           <button
             onClick={() => router.push('/')}
             className="px-5 py-2.5 bg-indigo-600 text-white rounded-lg border border-indigo-700 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-colors duration-200"
@@ -442,7 +436,6 @@ export default function BoardDetail() {
             </div>
           </div>
 
-          {/* Board Details - Collapsible */}
           <div className="mt-4 bg-white rounded-lg border border-gray-200">
             <button 
               className="w-full px-4 py-3 flex justify-between items-center text-left focus:outline-none"
@@ -580,7 +573,6 @@ export default function BoardDetail() {
             )}
           </div>
 
-          {/* Task Statistics Dashboard */}
           {taskStats && (
             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-white rounded-lg border border-gray-200 px-4 py-3 flex items-center gap-3">
@@ -682,7 +674,6 @@ export default function BoardDetail() {
             </div>
           )}
         </div>
-
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {statusColumns.map((status) => {

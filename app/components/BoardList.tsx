@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { format } from 'date-fns';
-import { Calendar, Clock, CheckSquare, ChevronRight, Trash } from 'lucide-react';
+import { Calendar, CheckSquare, ChevronRight, Trash } from 'lucide-react';
 
 interface Comment {
   id: string;
@@ -35,11 +35,7 @@ interface BoardListProps {
 
 export default function BoardList({ boards, onDeleteBoard }: BoardListProps) {
   const router = useRouter();
-  const [deletingBoardIds, setDeletingBoardIds] = useState<Set<string>>(new Set()); // Track multiple deletions
-
-  const getPriorityCount = (board: Board, priority: 'Low' | 'Medium' | 'High') => {
-    return board.tasks.filter((task) => task.priority === priority).length;
-  };
+  const [deletingBoardIds, setDeletingBoardIds] = useState<Set<string>>(new Set());
 
   const getStatusCount = (board: Board, status: 'To Do' | 'In Progress' | 'Done') => {
     return board.tasks.filter((task) => task.status === status).length;
@@ -49,7 +45,6 @@ export default function BoardList({ boards, onDeleteBoard }: BoardListProps) {
     e.preventDefault();
     e.stopPropagation();
 
-    // If already deleting this board, prevent additional requests
     if (deletingBoardIds.has(boardId)) return;
 
     if (!window.confirm('Are you sure you want to delete this board?')) return;

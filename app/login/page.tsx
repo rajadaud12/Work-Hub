@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Head from 'next/head';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image'; // Added import
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 
 type FormData = {
@@ -46,7 +47,6 @@ export default function Login() {
         <meta name="description" content="Log in to TaskBoard Hub to access your task boards." />
       </Head>
       
-      {/* Left Side: Form - directly on left section without card shadow container */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-8 bg-white">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
@@ -127,7 +127,7 @@ export default function Login() {
             </button>
 
             <p className="text-center text-sm text-gray-600">
-              Don't have an account?{' '}
+              Don’t have an account?{' '}
               <a href="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
                 Create an account
               </a>
@@ -136,19 +136,19 @@ export default function Login() {
         </div>
       </div>
       
-      {/* Right Side: Illustration with visible text */}
       <div className="hidden md:flex w-1/2 bg-gradient-to-br from-indigo-600 to-purple-700 p-12 flex-col justify-center items-center">
         <div className="max-w-lg text-center">
           <h2 className="text-4xl font-bold mb-6 text-white">TaskBoard Hub</h2>
           <p className="text-xl mb-12 text-white leading-relaxed">Collaborate and manage tasks with your team efficiently. Boost productivity with our intuitive interface.</p>
         </div>
-        <img 
+        <Image 
           src="/illustration.svg" 
           alt="TaskBoard Hub Illustration" 
           width={300}
+          height={300} // Added height
           className="max-w-md h-auto" 
         />
-       <div className="mt-12 flex gap-4">
+        <div className="mt-12 flex gap-4">
           <div className="p-4 bg-white bg-opacity-20 rounded-lg">
             <p className="text-sm font-medium mb-1 text-black">Streamlined Workflow</p>
             <p className="text-xs text-black opacity-90">Organize your tasks with ease</p>

@@ -20,7 +20,6 @@ interface Board {
   tasks: Task[];
 }
 
-// Export the handler as default
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { taskId } = req.query as { taskId: string };
   const client = await clientPromise;
@@ -35,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           return res.status(400).json({ error: 'Board ID is required' });
         }
 
-        const updateData: any = {};
+        const updateData: Record<string, unknown> = {};
         if (title !== undefined) updateData['tasks.$.title'] = title;
         if (priority !== undefined) updateData['tasks.$.priority'] = priority;
         if (description !== undefined) updateData['tasks.$.description'] = description;

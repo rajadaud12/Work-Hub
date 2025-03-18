@@ -1,4 +1,3 @@
-// lib/mongodb.ts
 import { MongoClient } from 'mongodb';
 
 const uri = process.env.MONGODB_URI;
@@ -10,14 +9,21 @@ if (!uri) {
 }
 
 const options = {};
-let client = new MongoClient(uri, options);
+const client = new MongoClient(uri, options); // Changed to const
 let clientPromise: Promise<MongoClient>;
 
+// Define an interface for the global object with MongoClientPromise
+interface GlobalWithMongo {
+  _mongoClientPromise?: Promise<MongoClient>;
+}
+
+const globalWithMongo = global as unknown as GlobalWithMongo;
+
 if (process.env.NODE_ENV !== 'production') {
-  if (!(global as any)._mongoClientPromise) {
+  if (!globalWithMongo._mongoClientPromise) {
     console.log('Establishing new MongoDB connection in development...');
     console.log('Connecting with URI:', uri);
-    (global as any)._mongoClientPromise = client.connect().then((client) => {
+    globalWithMongo._mongoClientPromise = client.connect().then((client) => {
       console.log('MongoDB connected successfully in development');
       return client;
     }).catch((err) => {
@@ -25,7 +31,7 @@ if (process.env.NODE_ENV !== 'production') {
       throw err;
     });
   }
-  clientPromise = (global as any)._mongoClientPromise;
+  clientPromise = globalWithMongo._mongoClientPromise;
 } else {
   console.log('Establishing new MongoDB connection in production...');
   console.log('Connecting with URI:', uri);

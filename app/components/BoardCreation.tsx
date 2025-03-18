@@ -23,6 +23,7 @@ export default function BoardCreation({ onCreateBoard }: BoardCreationProps) {
       setBoardName('');
       router.push(`/board/${boardId}`);
     } catch (error) {
+      console.error('Error creating board:', error);
       setError('Failed to create board. Please try again.');
     } finally {
       setIsSubmitting(false);

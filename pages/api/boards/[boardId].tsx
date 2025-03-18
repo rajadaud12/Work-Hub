@@ -2,13 +2,28 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import clientPromise from '../../../lib/mongodb';
 import jwt from 'jsonwebtoken';
 
+interface Task {
+  id: string;
+  title: string;
+  priority: 'Low' | 'Medium' | 'High';
+  description?: string;
+  deadline?: string | null;
+  status: 'To Do' | 'In Progress' | 'Done';
+  comments: any[];
+}
+
+interface UpdateBoardData {
+  name?: string;
+  tasks?: Task[];
+}
+
 const getUserIdFromToken = (req: NextApiRequest): string | null => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
   const token = authHeader.split(' ')[1];
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key') as { id: string };
-    return decoded.id; // Changed from userId to id
+    return decoded.id;
   } catch (error) {
     console.error('Token verification failed:', error);
     return null;
@@ -39,7 +54,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                   $match: {
                     $expr: {
                       $in: [
-                        { $toString: "$_id" }, // Convert _id to string
+                        { $toString: "$_id" },
                         "$$members"
                       ]
                     }
@@ -78,8 +93,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         const boardData = board[0];
-        console.log('Board data with memberDetails:', boardData); // Debug log
-
         if (!boardData.members.includes(userId)) {
           return res.status(403).json({ error: 'Forbidden' });
         }
@@ -100,7 +113,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           return res.status(403).json({ error: 'Forbidden' });
         }
         const { name, tasks } = req.body;
-        const updateData: any = {};
+        const updateData: UpdateBoardData = {};
         if (name) updateData.name = name;
         if (tasks) updateData.tasks = tasks;
 
@@ -111,21 +124,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(500).json({ error: 'Failed to update board' });
       }
 
-      case 'DELETE':
-  try {
-    const board = await db.collection('boards').findOne({ id: boardId });
-    if (!board) {
-      return res.status(404).json({ error: 'Board not found' });
-    }
-    if (!board.members.includes(userId)) {
-      return res.status(403).json({ error: 'Forbidden - Only members can delete this board' });
-    }
-    await db.collection('boards').deleteOne({ id: boardId });
-    return res.status(200).json({ message: 'Board deleted' });
-  } catch (error) {
-    console.error('DELETE /api/boards/[boardId] Error:', error);
-    return res.status(500).json({ error: 'Failed to delete board' });
-  }
+    case 'DELETE':
+      try {
+        const board = await db.collection('boards').findOne({ id: boardId });
+        if (!board) {
+          return res.status(404).json({ error: 'Board not found' });
+        }
+        if (!board.members.includes(userId)) {
+          return res.status(403).json({ error: 'Forbidden - Only members can delete this board' });
+        }
+        await db.collection('boards').deleteOne({ id: boardId });
+        return res.status(200).json({ message: 'Board deleted' });
+      } catch (error) {
+        console.error('DELETE /api/boards/[boardId] Error:', error);
+        return res.status(500).json({ error: 'Failed to delete board' });
+      }
+
     default:
       res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
       return res.status(405).end(`Method ${req.method} Not Allowed`);
