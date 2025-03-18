@@ -3,6 +3,12 @@ import clientPromise from '../../lib/mongodb';
 import { v4 as uuidv4 } from 'uuid';
 import jwt from 'jsonwebtoken';
 
+interface Comment {
+  id: string;
+  text: string;
+  userId: string;
+}
+
 interface Task {
   id: string;
   title: string;
@@ -10,8 +16,9 @@ interface Task {
   description?: string;
   deadline?: string | null;
   status: 'To Do' | 'In Progress' | 'Done';
-  comments: any[];
+  comments: Comment[];
 }
+
 
 const generateRandomPassword = () => {
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

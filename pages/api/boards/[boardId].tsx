@@ -2,6 +2,13 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import clientPromise from '../../../lib/mongodb';
 import jwt from 'jsonwebtoken';
 
+interface Comment {
+  id: string;
+  userId: string;
+  text: string;
+  createdAt: string;
+}
+
 interface Task {
   id: string;
   title: string;
@@ -9,7 +16,7 @@ interface Task {
   description?: string;
   deadline?: string | null;
   status: 'To Do' | 'In Progress' | 'Done';
-  comments: any[];
+  comments: Comment[];
 }
 
 interface UpdateBoardData {

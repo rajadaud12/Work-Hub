@@ -2,6 +2,13 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import clientPromise from '../../../lib/mongodb';
 import { UpdateFilter } from 'mongodb';
 
+interface Comment {
+  id: string;
+  text: string;
+  userId: string;
+  createdAt: string; // Optional timestamp
+}
+
 interface Task {
   id: string;
   boardId: string;
@@ -10,7 +17,7 @@ interface Task {
   description?: string;
   deadline?: string | null;
   status: 'To Do' | 'In Progress' | 'Done';
-  comments: any[];
+  comments: Comment[]; // Updated type
 }
 
 interface Board {
