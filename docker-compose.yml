@@ -1,10 +1,12 @@
-version: '3.8'
-
+version: '3'
 services:
-  workhub:
-    build: .
-    container_name: workhub_app
+  workhub_jenkins:
+    container_name: workhub-jenkins
+    build:
+      context: .
     ports:
-      - "3000:3000"
-    env_file:
-      - .env
+      - "4000:3000"  
+    volumes:
+      - .:/usr/src/app  
+    environment:
+      - NODE_ENV=production
