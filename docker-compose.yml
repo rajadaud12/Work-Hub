@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  workhub:
+    build: .
+    container_name: workhub_app
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env

@@ -1,7 +1,7 @@
-
 import { useState, FormEvent, useRef, useEffect } from 'react';
 import { format, isAfter, isSameDay } from 'date-fns';
 import { motion } from 'framer-motion';
+import React, { JSX } from 'react';
 
 // Define types for the props and data structures
 interface Comment {
@@ -32,21 +32,18 @@ export default function TaskCard({ task, onEdit, onAddComment }: TaskCardProps) 
   const [showAllComments, setShowAllComments] = useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const commentInputRef = useRef<HTMLTextAreaElement>(null);
-  
+
   useEffect(() => {
-    // Auto-focus the comment input when opened
     if (isCommentOpen && commentInputRef.current) {
       commentInputRef.current.focus();
     }
   }, [isCommentOpen]);
 
   // Priority-based styling
-  const priorityConfig: Record<Task['priority'], {
-    bgColor: string, 
-    textColor: string,
-    borderColor: string,
-    icon: JSX.Element
-  }> = {
+  const priorityConfig: Record<
+    Task['priority'],
+    { bgColor: string; textColor: string; borderColor: string; icon: JSX.Element }
+  > = {
     Low: {
       bgColor: 'bg-green-50',
       textColor: 'text-green-700',
@@ -55,7 +52,7 @@ export default function TaskCard({ task, onEdit, onAddComment }: TaskCardProps) 
         <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
         </svg>
-      )
+      ),
     },
     Medium: {
       bgColor: 'bg-amber-50',
@@ -65,7 +62,7 @@ export default function TaskCard({ task, onEdit, onAddComment }: TaskCardProps) 
         <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>
-      )
+      ),
     },
     High: {
       bgColor: 'bg-red-50',
@@ -73,37 +70,28 @@ export default function TaskCard({ task, onEdit, onAddComment }: TaskCardProps) 
       borderColor: 'border-red-200',
       icon: (
         <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+          />
         </svg>
-      )
-    }
+      ),
+    },
   };
 
-  // Get deadline status
   const getDeadlineStatus = () => {
     if (!task.deadline) return null;
-    
     const now = new Date();
     const deadline = new Date(task.deadline);
-    
     if (isAfter(now, deadline) && !isSameDay(now, deadline)) {
-      return {
-        text: 'Overdue',
-        className: 'text-red-600 font-medium'
-      };
+      return { text: 'Overdue', className: 'text-red-600 font-medium' };
     }
-    
     if (isSameDay(now, deadline)) {
-      return {
-        text: 'Due today',
-        className: 'text-amber-600 font-medium'
-      };
+      return { text: 'Due today', className: 'text-amber-600 font-medium' };
     }
-    
-    return {
-      text: 'Due',
-      className: 'text-gray-500'
-    };
+    return { text: 'Due', className: 'text-gray-500' };
   };
 
   const deadlineStatus = getDeadlineStatus();
@@ -112,26 +100,21 @@ export default function TaskCard({ task, onEdit, onAddComment }: TaskCardProps) 
     e.dataTransfer.setData('taskId', task.id);
     setIsDragging(true);
 
-    // Add a small delay to set dragging state to false after transition ends
     const dragImage = new Image();
     dragImage.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
     e.dataTransfer.setDragImage(dragImage, 0, 0);
-    
-    // Use actual element as drag image
+
     const element = e.currentTarget;
     const rect = element.getBoundingClientRect();
     const ghostElement = element.cloneNode(true) as HTMLElement;
-    
     ghostElement.style.position = 'absolute';
     ghostElement.style.top = '-1000px';
     ghostElement.style.opacity = '0.8';
     ghostElement.style.transform = 'rotate(3deg)';
     ghostElement.style.width = `${rect.width}px`;
-    
     document.body.appendChild(ghostElement);
     e.dataTransfer.setDragImage(ghostElement, rect.width / 2, 20);
-    
-    // Clean up the ghost element
+
     setTimeout(() => {
       document.body.removeChild(ghostElement);
     }, 100);
@@ -156,21 +139,24 @@ export default function TaskCard({ task, onEdit, onAddComment }: TaskCardProps) 
     <motion.div
       layout
       initial={{ opacity: 1 }}
-      animate={{ 
+      animate={{
         opacity: isDragging ? 0.5 : 1,
-        scale: isDragging ? 0.98 : 1
+        scale: isDragging ? 0.98 : 1,
       }}
       transition={{ duration: 0.15 }}
       className={`bg-white border-2 rounded-lg ${
-        isDragging 
-          ? 'border-indigo-200 bg-indigo-50/30' 
+        isDragging
+          ? 'border-indigo-200 bg-indigo-50/30'
           : 'border-gray-100 hover:border-indigo-100'
       } transition-all duration-200`}
-      draggable
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
     >
-      <div className="p-4 cursor-pointer group" onClick={onEdit}>
+      <div
+        draggable
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+        className="p-4 cursor-pointer group"
+        onClick={onEdit}
+      >
         <div className="flex justify-between items-start mb-2">
           <h4 className="font-medium text-gray-900 group-hover:text-indigo-700 transition-colors duration-200">
             {task.title}
@@ -192,7 +178,9 @@ export default function TaskCard({ task, onEdit, onAddComment }: TaskCardProps) 
 
         <div className="mt-3 flex flex-wrap items-center gap-2">
           {task.deadline && (
-            <div className={`text-xs flex items-center p-1.5 px-2 rounded-md bg-gray-50 border border-gray-100 ${deadlineStatus?.className || ''}`}>
+            <div
+              className={`text-xs flex items-center p-1.5 px-2 rounded-md bg-gray-50 border border-gray-100 ${deadlineStatus?.className || ''}`}
+            >
               <svg className="h-3.5 w-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -201,10 +189,12 @@ export default function TaskCard({ task, onEdit, onAddComment }: TaskCardProps) 
                   d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                 />
               </svg>
-              <span>{deadlineStatus?.text}: {format(new Date(task.deadline), 'MMM d, yyyy')}</span>
+              <span>
+                {deadlineStatus?.text}: {format(new Date(task.deadline), 'MMM d, yyyy')}
+              </span>
             </div>
           )}
-          
+
           {task.comments.length > 0 && (
             <div className="text-xs flex items-center p-1.5 px-2 rounded-md bg-gray-50 border border-gray-100 text-gray-600">
               <svg className="h-3.5 w-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -246,7 +236,12 @@ export default function TaskCard({ task, onEdit, onAddComment }: TaskCardProps) 
                 <p className="mb-1">{comment.content}</p>
                 <p className="text-xs text-gray-400 flex items-center">
                   <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                   {format(new Date(comment.createdAt), 'MMM d, h:mm a')}
                 </p>
@@ -278,7 +273,9 @@ export default function TaskCard({ task, onEdit, onAddComment }: TaskCardProps) 
               <button
                 type="submit"
                 disabled={!comment.trim()}
-                className={`px-3 py-1.5 text-xs bg-indigo-600 text-white rounded hover:bg-indigo-700 border border-transparent transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 ${!comment.trim() ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`px-3 py-1.5 text-xs bg-indigo-600 text-white rounded hover:bg-indigo-700 border border-transparent transition-colors duration-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 ${
+                  !comment.trim() ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
               >
                 Add
               </button>
