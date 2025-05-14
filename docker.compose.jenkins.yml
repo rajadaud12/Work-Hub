@@ -1,0 +1,12 @@
+version: '3'
+services:
+  workhub_jenkins:
+    container_name: workhub-jenkins
+    build:
+      context: .
+    ports:
+      - "4000:3000" 
+    volumes:
+      - .:/usr/src/app  
+    environment:
+      - NODE_ENV=production
