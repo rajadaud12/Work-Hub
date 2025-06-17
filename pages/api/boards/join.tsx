@@ -52,7 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Find the board with proper typing
     const board = await db.collection<Board>('boards').findOne({ id: boardId });
     if (!board) {
-      return res.status(404).json({ error: 'Board not found' });
+      return res.status(404).json({ error: 'Board not found!' });
     }
     if (board.password !== password) {
       return res.status(403).json({ error: 'Incorrect password' });

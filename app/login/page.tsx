@@ -162,7 +162,7 @@ export default function Login() {
 
       <div className="hidden md:flex w-1/2 bg-gradient-to-br from-indigo-600 to-purple-700 p-12 flex-col justify-center items-center">
         <div className="max-w-lg text-center">
-          <h2 className="text-4xl font-bold mb-6 text-white">TaskBoard Hub</h2>
+          <h2 className="text-4xl font-bosld mb-6 text-white">TaskBoard Hub</h2>
           <p className="text-xl mb-12 text-white leading-relaxed">
             Collaborate and manage tasks with your team efficiently. Boost productivity with our intuitive interface.
           </p>
@@ -181,7 +181,7 @@ export default function Login() {
           </div>
           <div className="p-4 bg-white bg-opacity-20 rounded-lg">
             <p className="text-sm font-medium mb-1 text-black">Team Collaboration</p>
-            <p className="text-xs text-black opacity-90">Work together seamlessly</p>
+            <p className="text-xs text-black opacity-90">Work together elegantly</p>
           </div>
         </div>
       </div>
