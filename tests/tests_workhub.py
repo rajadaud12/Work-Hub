@@ -7,7 +7,7 @@ import random
 import string
 
 # Replace with your EC2 public IP
-BASE_URL = "http://123.456.789.101:4000"  # 🔁 <-- CHANGE THIS
+BASE_URL = "http://13.48.46.254:4000"  # 🔁 <-- CHANGE THIS
 
 # Utility function to generate a random email
 def random_email():
